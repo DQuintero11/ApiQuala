@@ -3,6 +3,7 @@ using ApiQuala.Core.Interfaces;
 using ApiQuala.Infraestructure.Security;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace ApiQuala.Controllers
 {
 
@@ -21,9 +22,9 @@ namespace ApiQuala.Controllers
             [HttpPost("login")]
             public IActionResult Login([FromBody] Users login)
             {
-                Token _token = new Token(_config);
-
-                Users resultDb=   _authService.ValidarUsuarioAsync(login.username , login.password).GetAwaiter().GetResult();
+            Token _token = new Token(_config);
+            
+            Users resultDb=   _authService.ValidarUsuarioAsync(login.username , login.password).GetAwaiter().GetResult();
 
             if (resultDb != null)
                 {

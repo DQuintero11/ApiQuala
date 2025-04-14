@@ -8,6 +8,7 @@ using ApiQuala.Core.Interfaces;
 using ApiQuala.Core.Domain.Entities;
 using System.Data.SqlClient;
 using ApiQuala.Infraestructure.Security;
+using BCrypt.Net;
 
 namespace ApiQuala.Core.Services
 {
@@ -24,12 +25,13 @@ namespace ApiQuala.Core.Services
 
         public async Task<Users> ValidarUsuarioAsync(string usuarioNombre, string contraseña)
         {
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(contraseña);
 
             var usuario  =    await _dataBaseService.ValidateLogin(usuarioNombre);
             if (usuario == null)
                 return null;
 
-            if (ValidarContraseña(contraseña, usuario.password))
+            if (ValidarContraseña(contraseña, hashedPassword))
             {
                 return usuario;
             }
@@ -37,9 +39,10 @@ namespace ApiQuala.Core.Services
 
 
         }
-        private bool ValidarContraseña(string contraseñaIngresada, string contraseñaHash)
+        private bool ValidarContraseña(string contraseñaIngresada, string hashedPassword)
         {
-            return contraseñaIngresada == contraseñaHash;
+            return BCrypt.Net.BCrypt.Verify(contraseñaIngresada, hashedPassword);
+
         }
     }
 }
